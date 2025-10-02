@@ -1,0 +1,36 @@
+USE gabinete_abogados;
+DROP TABLE IF EXISTS Asuntos_procuradores;
+DROP TABLE IF EXISTS Procuradores;
+DROP TABLE IF EXISTS Asuntos;
+DROP TABLE IF EXISTS Clientes;
+
+CREATE TABLE Clientes (
+dni INT PRIMARY KEY,
+nombre VARCHAR (255),
+direccion VARCHAR (255)
+);
+
+CREATE TABLE Asuntos (
+numero_expediente INT PRIMARY KEY,
+dni INT,
+fecha_inicio VARCHAR (255) ,
+fecha_fin VARCHAR (255),
+estado ENUM ("Abierto", "Cerrado") NOT NULL DEFAULT "Abierto",
+CONSTRAINT chk_estado_valido CHECK (estado IN ("Abierto", "Cerrado")),
+CONSTRAINT chk_estado_fecha_fin CHECK ((estado = "Abierto" AND fecha_fin IS NULL) OR (estado = "Cerrado" AND fecha_fin IS NOT NULL)),
+FOREIGN KEY (dni) REFERENCES Clientes(dni)
+);
+
+CREATE TABLE Procuradores (
+id_procurador INT PRIMARY KEY,
+nombre VARCHAR (255),
+direccion VARCHAR (255)
+);
+
+CREATE TABLE Asuntos_procuradores (
+numero_expediente INT,
+id_procurador INT,
+PRIMARY KEY (numero_expediente, id_procurador),
+FOREIGN KEY (numero_expediente) REFERENCES Asuntos(numero_expediente),
+FOREIGN KEY (id_procurador) REFERENCES Procuradores(id_procurador)
+);
